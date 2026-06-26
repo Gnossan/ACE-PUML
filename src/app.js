@@ -23,4 +23,12 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
   }
+  var btnDrawio = document.getElementById('btn-export-drawio');
+  if (btnDrawio) {
+    btnDrawio.addEventListener('click', function() {
+      var code = pumlInput ? pumlInput.value : '';
+      var drawioXml = window.sekvensTillDrawio(code);
+      window.exporteraDrawio(drawioXml);
+    });
+  }
 });
