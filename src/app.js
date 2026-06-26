@@ -29,11 +29,14 @@ document.addEventListener('DOMContentLoaded', function() {
       var code = pumlInput ? pumlInput.value : '';
       var isKlass = code.indexOf('class ') !== -1;
       var isUsecase = code.indexOf('usecase ') !== -1 || code.indexOf('actor ') !== -1;
+      var isAktivitet = code.indexOf('start') !== -1 || code.indexOf('stop') !== -1 || /^:/.test(code);
       var drawioXml;
       if (isKlass) {
         drawioXml = window.klassTillDrawio(code);
       } else if (isUsecase) {
         drawioXml = window.usecaseTillDrawio(code);
+      } else if (isAktivitet) {
+        drawioXml = window.aktivitetTillDrawio(code);
       } else {
         drawioXml = window.sekvensTillDrawio(code);
       }
