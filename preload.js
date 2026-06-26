@@ -1,6 +1,2 @@
 const {contextBridge,ipcRenderer}=require('electron');
-contextBridge.exposeInMainWorld('aceAPI',{
-  renderPuml:(code)=>ipcRenderer.invoke('render-puml',code),
-  renderPumlPng:(code)=>ipcRenderer.invoke('render-puml-png',code),
-  sparaFil:(innehall,foreslagetNamn,filter)=>ipcRenderer.invoke('visa-spara-dialog',innehall,foreslagetNamn,filter)
-});
+contextBridge.exposeInMainWorld('aceAPI',{\n  renderPuml:(code)=>ipcRenderer.invoke('render-puml',code),\n  renderPumlPng:(code)=>ipcRenderer.invoke('render-puml-png',code),\n  sparaFil:(innehall,foreslagetNamn,filter)=>ipcRenderer.invoke('visa-spara-dialog',innehall,foreslagetNamn,filter),\n  aiSparaNyckel:(krypteradNyckel)=>ipcRenderer.invoke('ai-spara-nyckel',krypteradNyckel),\n  aiLaddaInstallningar:()=>ipcRenderer.invoke('ai-ladda-inställningar'),\n  aiChattMeddelande:(message,inkluderaKod,kod)=>ipcRenderer.invoke('ai-chatt-meddelande',message,inkluderaKod,kod)\n});
