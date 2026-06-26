@@ -7,7 +7,8 @@
   "license": "GPL-2.0-only",
   "scripts": {
     "start": "electron .",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "postinstall": "node scripts/download-jre.js"
   },
   "devDependencies": {
     "electron": "^42.5.0",
