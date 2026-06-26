@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
   window.skapaPaneler();
+  window.skapaAIChatt();
   var pumlInput = document.getElementById('puml-input');
   if (pumlInput) {
     pumlInput.addEventListener('input', function() {
@@ -16,9 +17,9 @@ document.addEventListener('DOMContentLoaded', function() {
   if (btnPng) {
     btnPng.addEventListener('click', function() {
       var code = pumlInput ? pumlInput.value : '';
-      window.aceAPI.renderPumlPng(code).then(function(result) {
-        if (result.png) {
-          window.exporteraPNG('data:image/png;base64,' + result.png);
+      window.aceAPI.renderPumlPng(code).then(function(resultat) {
+        if (resultat.png) {
+          window.exporteraPNG('data:image/png;base64,' + resultat.png);
         }
       });
     });
@@ -41,6 +42,12 @@ document.addEventListener('DOMContentLoaded', function() {
         drawioXml = window.sekvensTillDrawio(code);
       }
       window.exporteraDrawio(drawioXml);
+    });
+  }
+  var btnAI = document.getElementById('btn-ai-inställningar');
+  if (btnAI) {
+    btnAI.addEventListener('click', function() {
+      window.skapaAIInstallningar();
     });
   }
 });
