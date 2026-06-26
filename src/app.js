@@ -27,7 +27,13 @@ document.addEventListener('DOMContentLoaded', function() {
   if (btnDrawio) {
     btnDrawio.addEventListener('click', function() {
       var code = pumlInput ? pumlInput.value : '';
-      var drawioXml = window.sekvensTillDrawio(code);
+      var isKlass = code.indexOf('class ') !== -1;
+      var drawioXml;
+      if (isKlass) {
+        drawioXml = window.klassTillDrawio(code);
+      } else {
+        drawioXml = window.sekvensTillDrawio(code);
+      }
       window.exporteraDrawio(drawioXml);
     });
   }
