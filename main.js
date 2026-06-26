@@ -28,6 +28,24 @@ ipcMain.handle('render-puml',async(event,code)=>{
     });
   });
 });
+ipcMain.handle('render-puml-png',async(event,code)=>{
+  const jre=path.join(__dirname,'resources','jre','bin','java');
+  const puml=path.join(__dirname,'resources','plantuml.jar');
+  const proc=spawn(jre,['-DPLANTUML_SECURITY_PROFILE=SANDBOX','-jar',puml,'-tpng','-pipe'],{stdio:['pipe','pipe','pipe']});
+  let chunks=[];let stderr='';
+  proc.stdout.on('data',(d)=>{chunks.push(d);});
+  proc.stderr.on('data',(d)=>{stderr+=d.toString();});
+  return new Promise((resolve)=>{
+    proc.on('close',(c)=>{
+      if(c!==0||chunks.length===0){
+        resolve({fel:stderr||'Plantuml returned error code '+c});
+      }else{
+        var buffer=Buffer.concat(chunks);
+        resolve({png:buffer.toString('base64')});
+      }
+    });
+  });
+});
 ipcMain.handle('visa-spara-dialog',async(event,innehall,foreslagetNamn,filter)=>{
   const resultat=await dialog.showSaveDialog(win,{
     defaultPath:foreslagetNamn,
