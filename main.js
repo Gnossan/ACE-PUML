@@ -1,5 +1,5 @@
 const {app,BrowserWindow,ipcMain}=require('electron');
-const path=require('path'),{spawn}=require('child_process');
+const path=require('path'),{spawn}=require('child_process'),{dialog,shell}=require('electron'),fs=require('fs');
 let win;
 function createWindow(){
   win=new BrowserWindow({
@@ -27,6 +27,17 @@ ipcMain.handle('render-puml',async(event,code)=>{
       }
     });
   });
+});
+ipcMain.handle('visa-spara-dialog',async(event,innehall,foreslagetNamn,filter)=>{
+  const resultat=await dialog.showSaveDialog(win,{
+    defaultPath:foreslagetNamn,
+    filters:filter
+  });
+  if(!resultat.canceled&&resultat.filePath){
+    fs.writeFileSync(resultat.filePath,innehall);
+    return {ok:true,svartTill:resultat.filePath};
+  }
+  return {ok:false};
 });
 app.whenReady().then(createWindow);
 app.on('window-all-closed',()=>{if(process.platform!=='darwin')app.quit();});
