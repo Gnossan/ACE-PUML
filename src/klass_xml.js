@@ -4,34 +4,35 @@ function klassTillDrawio(kalla) {
   var kanter = [];
   var idCounter = 2;
   var namnTillId = {};
-  var x = 20, y = 20;
-  for (var i = 0; i < data.noder.length; i++) {
-    var nod = data.noder[i];
+  for (var i = 0; i < data.klasser.length; i++) {
+    var k = data.klasser[i];
     var nodId = String(idCounter++);
-    namnTillId[nod.namn] = nodId;
+    namnTillId[k.namn] = nodId;
+    var etikett = k.namn;
+    if (k.medlemmar.length > 0) {
+      etikett += ': ' + k.medlemmar.join('; ');
+    }
     noder.push({
       id: nodId,
-      etikett: nod.namn,
-      x: x,
-      y: y,
-      bredd: 200,
-      hojd: 100,
-      stil: "swimlane;whiteSpace=wrap;html=1;"
+      etikett: etikett,
+      x: i * 220,
+      y: 20,
+      bredd: 180,
+      hojd: 30 + k.medlemmar.length * 20,
+      stil: "rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;"
     });
-    x += 250;
-    if (x > 600) { x = 20; y += 150; }
   }
-  for (var j = 0; j < data.kanter.length; j++) {
-    var k = data.kanter[j];
-    var kallaId = namnTillId[k.namn];
-    var malId = namnTillId[k.mal];
+  for (var j = 0; j < data.relationer.length; j++) {
+    var r = data.relationer[j];
+    var kallaId = namnTillId[r.kalla];
+    var malId = namnTillId[r.mal];
     if (kallaId && malId) {
       kanter.push({
         id: String(idCounter++),
         kallaId: kallaId,
         malId: malId,
-        etikett: '',
-        stil: k.stil
+        etikett: r.etikett,
+        stil: r.typ === 'arv' ? "endArrow=block;endFill=0;html=1;" : "endArrow=open;html=1;"
       });
     }
   }

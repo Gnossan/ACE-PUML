@@ -1,39 +1,37 @@
 function klassParser(kalla) {
   var rader = kalla.split('\n');
-  var noder = [];
-  var kanter = [];
+  var klasser = [];
+  var relationer = [];
   var nuvarandeKlass = null;
   for (var i = 0; i < rader.length; i++) {
     var rad = rader[i].trim();
     if (rad === '@startuml' || rad === '@enduml' || rad === '') continue;
     var openMatch = rad.match(/^class\s+(\w+)\s*\{$/);
     if (openMatch) {
-      nuvarandeKlass = openMatch[1];
-      noder.push({ namn: nuvarandeKlass });
+      nuvarandeKlass = { namn: openMatch[1], medlemmar: [] };
+      klasser.push(nuvarandeKlass);
       continue;
     }
-    var closeMatch = rad === '}';
-    if (closeMatch) {
+    if (rad === '}') {
       nuvarandeKlass = null;
       continue;
     }
     if (nuvarandeKlass) {
-      var attMatch = rad.match(/^(\+|-|#)?(\w+)\s*:\s*(.*)$/);
-      if (attMatch) continue;
-      var metMatch = rad.match(/^(\+|-|#)?(\w+)\s*\((.*)\)\s*(:\s*\w+)?$/);
-      if (metMatch) continue;
-      var extendsMatch = rad.match(/^(.+)\s*-->\s*(.+)$/);
-      if (extendsMatch) {
-        kanter.push({ namn: extendsMatch[1].trim(), mal: extendsMatch[2].trim(), stil: 'edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;' });
-        continue;
-      }
-      var assocMatch = rad.match(/^(.+)\s*-->\s*(.+)$/);
-      if (assocMatch && !extendsMatch) {
-        kanter.push({ namn: assocMatch[1].trim(), mal: assocMatch[2].trim(), stil: '' });
-        continue;
-      }
+      nuvarandeKlass.medlemmar.push(rad);
+      continue;
+    }
+    var noBodyMatch = rad.match(/^class\s+(\w+)\s*$/);
+    if (noBodyMatch) {
+      klasser.push({ namn: noBodyMatch[1], medlemmar: [] });
+      continue;
+    }
+    var relMatch = rad.match(/^(\w+)\s+(--\|>|\.\.>|-+>)\s+(\w+)\s*(?::\s*(.*))?$/);
+    if (relMatch) {
+      var typ = relMatch[2] === '--|>' ? 'arv' : 'association';
+      relationer.push({ kalla: relMatch[1], mal: relMatch[3], typ: typ, etikett: relMatch[4] || '' });
+      continue;
     }
   }
-  return { noder: noder, kanter: kanter };
+  return { klasser: klasser, relationer: relationer };
 }
 window.klassParser = klassParser;
