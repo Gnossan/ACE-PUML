@@ -1,4 +1,4 @@
-module.exports.xmlEscape = function xmlEscape(text) {
+window.xmlEscape = function xmlEscape(text) {
   return String(text)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
