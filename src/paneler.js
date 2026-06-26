@@ -38,6 +38,11 @@ window.skapaPaneler = function() {
   btnPng.textContent = 'Exportera PNG';
   exportBtnRow.appendChild(btnPng);
 
+  var btnDrawio = document.createElement('button');
+  btnDrawio.id = 'btn-export-drawio';
+  btnDrawio.textContent = 'Exportera draw.io';
+  exportBtnRow.appendChild(btnDrawio);
+
   var previewOutput = document.createElement('div');
   previewOutput.id = 'preview-output';
   previewOutput.style.flex = '1';
