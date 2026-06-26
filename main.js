@@ -18,6 +18,8 @@ ipcMain.handle('render-puml',async(event,code)=>{
   let svg='';let stderr='';
   proc.stdout.on('data',(d)=>{svg+=d.toString();});
   proc.stderr.on('data',(d)=>{stderr+=d.toString();});
+  proc.stdin.write(code);
+  proc.stdin.end();
   return new Promise((resolve)=>{
     proc.on('close',(c)=>{
       if(c!==0||!svg){
@@ -35,6 +37,8 @@ ipcMain.handle('render-puml-png',async(event,code)=>{
   let chunks=[];let stderr='';
   proc.stdout.on('data',(d)=>{chunks.push(d);});
   proc.stderr.on('data',(d)=>{stderr+=d.toString();});
+  proc.stdin.write(code);
+  proc.stdin.end();
   return new Promise((resolve)=>{
     proc.on('close',(c)=>{
       if(c!==0||chunks.length===0){

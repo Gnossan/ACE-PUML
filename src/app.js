@@ -3,8 +3,14 @@ document.addEventListener('DOMContentLoaded', function() {
   window.skapaAIChatt();
   var pumlInput = document.getElementById('puml-input');
   if (pumlInput) {
+    var renderTimeout = null;
     pumlInput.addEventListener('input', function() {
-      window.visaForhandsgranskning(pumlInput.value);
+      if (renderTimeout) {
+        clearTimeout(renderTimeout);
+      }
+      renderTimeout = setTimeout(function() {
+        window.visaForhandsgranskning(pumlInput.value);
+      }, 400);
     });
   }
   var btnSvg = document.getElementById('btn-export-svg');
