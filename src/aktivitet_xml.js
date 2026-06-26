@@ -12,11 +12,13 @@ function aktivitetTillDrawio(kalla) {
     var stil;
     var etikett = '';
     if (s.typ === 'start') {
-      stil = 'ellipse;whiteSpace=wrap;html=1;fillColor=#ffcc00;strokeColor=#333;';
+      stil = 'ellipse;whiteSpace=wrap;html=1;fillColor=#000000;fontColor=#FFFFFF;';
+      etikett = 'Start';
     } else if (s.typ === 'stop') {
-      stil = 'ellipse;whiteSpace=wrap;html=1;fillColor=#66cc66;strokeColor=#333;';
+      stil = 'ellipse;whiteSpace=wrap;html=1;fillColor=#000000;fontColor=#FFFFFF;';
+      etikett = 'Stop';
     } else if (s.typ === 'aktivitet') {
-      stil = 'shape=actor;whiteSpace=wrap;html=1;';
+      stil = 'rounded=1;whiteSpace=wrap;html=1;';
       etikett = s.etikett;
     }
     noder.push({id: id, x: x, y: y, bredd: bredd, hojd: hojd, etikett: etikett, stil: stil});
