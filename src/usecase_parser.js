@@ -28,7 +28,7 @@ function usecaseParser(kalla) {
       }
     }
 
-    var rel = rad.match(/^(\w+)\s*-\w*>\s*(\w+)(?::\s*(.+))?$/);
+    var rel = rad.match(/^(\w+)\s*-+>\s*(\w+)\s*(?::\s*(.+))?$/);
     if (rel) {
       relationer.push({kalla: rel[1], mal: rel[2], etikett: (rel[3] ? rel[3].trim() : '')});
     }
