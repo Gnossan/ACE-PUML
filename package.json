@@ -13,5 +13,13 @@
   "devDependencies": {
     "electron": "^42.5.0",
     "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "com.acepuml.app",
+    "mac": {
+      "category": "public.app-category.graphics-design",
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false
+    }
   }
 }
