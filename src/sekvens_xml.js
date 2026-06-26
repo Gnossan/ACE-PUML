@@ -2,7 +2,7 @@ function sekvensTillDrawio(kalla) {
   var data = window.sekvensParser(kalla);
   var noder = [];
   var kanter = [];
-  var idCounter = 1;
+  var idCounter = 2;
 
   for (var i = 0; i < data.deltagare.length; i++) {
     noder.push({
