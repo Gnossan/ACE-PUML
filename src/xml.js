@@ -6,7 +6,8 @@ function skapaMxGraphDokument(noder, kanter) {
 
   for (var i = 0; i < noder.length; i++) {
     var n = noder[i];
-    xml += '    <mxCell id="' + n.id + '" value="' + window.xmlEscape(n.etikett) + '" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">\n';
+    var stil = n.stil ? n.stil : "ellipse;whiteSpace=wrap;html=1;";
+    xml += '    <mxCell id="' + n.id + '" value="' + window.xmlEscape(n.etikett) + '" style="' + stil + '" parent="1" vertex="1">\n';
     xml += '      <mxGeometry x="' + n.x + '" y="' + n.y + '" width="' + n.bredd + '" height="' + n.hojd + '" as="geometry"/>\n';
     xml += '    </mxCell>\n';
   }
