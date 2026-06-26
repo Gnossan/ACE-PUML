@@ -15,7 +15,8 @@ function skapaMxGraphDokument(noder, kanter) {
   for (var j = 0; j < kanter.length; j++) {
     var k = kanter[j];
     var etikett = k.etikett ? (' value="' + window.xmlEscape(k.etikett) + '"') : '';
-    xml += '    <mxCell id="' + k.id + '" edge="1" parent="1" source="' + k.kallaId + '" target="' + k.malId + '"' + etikett + '/>\n';
+    var stilAttribut = k.stil ? (' style="' + k.stil + '"') : '';
+    xml += '    <mxCell id="' + k.id + '" edge="1" parent="1" source="' + k.kallaId + '" target="' + k.malId + '"' + etikett + stilAttribut + '/>\n';
   }
 
   xml += '  </root>\n';
