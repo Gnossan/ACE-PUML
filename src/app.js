@@ -28,9 +28,12 @@ document.addEventListener('DOMContentLoaded', function() {
     btnDrawio.addEventListener('click', function() {
       var code = pumlInput ? pumlInput.value : '';
       var isKlass = code.indexOf('class ') !== -1;
+      var isUsecase = code.indexOf('usecase ') !== -1 || code.indexOf('actor ') !== -1;
       var drawioXml;
       if (isKlass) {
         drawioXml = window.klassTillDrawio(code);
+      } else if (isUsecase) {
+        drawioXml = window.usecaseTillDrawio(code);
       } else {
         drawioXml = window.sekvensTillDrawio(code);
       }
