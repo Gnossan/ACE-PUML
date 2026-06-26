@@ -43,6 +43,11 @@ window.skapaPaneler = function() {
   btnDrawio.textContent = 'Exportera draw.io';
   exportBtnRow.appendChild(btnDrawio);
 
+  var btnAI = document.createElement('button');
+  btnAI.id = 'btn-ai-inställningar';
+  btnAI.textContent = 'AI-inställningar';
+  exportBtnRow.appendChild(btnAI);
+
   var previewOutput = document.createElement('div');
   previewOutput.id = 'preview-output';
   previewOutput.style.flex = '1';
