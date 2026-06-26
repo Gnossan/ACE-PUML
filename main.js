@@ -11,15 +11,22 @@ function createWindow(){
   });
   win.loadFile(path.join(__dirname,'src','index.html'));
 }
-ipcMain.on('render-puml',(event,code)=>{
+ipcMain.handle('render-puml',async(event,code)=>{
   const jre=path.join(__dirname,'resources','jre','bin','java');
   const puml=path.join(__dirname,'resources','plantuml.jar');
   const proc=spawn(jre,['-DPLANTUML_SECURITY_PROFILE=SANDBOX','-jar',puml,'-tsvg','-pipe'],{stdio:['pipe','pipe','pipe']});
-  let svg='';
+  let svg='';let stderr='';
   proc.stdout.on('data',(d)=>{svg+=d.toString();});
-  proc.stderr.on('data',(d)=>{console.error(d.toString());});
-  proc.on('close',(c)=>{if(c===0&&win)win.webContents.send('render-result',svg);});
-  proc.stdin.write(code);proc.stdin.end();
+  proc.stderr.on('data',(d)=>{stderr+=d.toString();});
+  return new Promise((resolve)=>{
+    proc.on('close',(c)=>{
+      if(c!==0||!svg){
+        resolve({fel:stderr||'Plantuml returned error code '+c});
+      }else{
+        resolve({svg});
+      }
+    });
+  });
 });
 app.whenReady().then(createWindow);
 app.on('window-all-closed',()=>{if(process.platform!=='darwin')app.quit();});
