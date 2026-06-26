@@ -1,4 +1,4 @@
-const {app,BrowserWindow,ipcMain}=require('electron');
+const {app,BrowserWindow,ipcMain,safeStorage}=require('electron');
 const path=require('path'),{spawn}=require('child_process'),{dialog,shell}=require('electron'),fs=require('fs');
 let win;
 function createWindow(){
@@ -56,6 +56,45 @@ ipcMain.handle('visa-spara-dialog',async(event,innehall,foreslagetNamn,filter)=>
     return {ok:true,svartTill:resultat.filePath};
   }
   return {ok:false};
+});
+const apiKeyFil=path.join(app.getPath('userData'),'api-nyckel.json');
+function losaNyckel(){
+  try{
+    if(!fs.existsSync(apiKeyFil)) return null;
+    const data=JSON.parse(fs.readFileSync(apiKeyFil,'utf8'));
+    const krypterad=data.krypterad;
+    if(!krypterad) return null;
+    const buffer=Buffer.from(krypterad,'base64');
+    return safeStorage.decryptString(buffer);
+  }catch(e){return null;}
+}
+ipcMain.handle('ai-spara-nyckel',async(event,krypteradNyckel)=>{
+  fs.writeFileSync(apiKeyFil,JSON.stringify({krypterad:krypteradNyckel}));
+  return {ok:true};
+});
+ipcMain.handle('ai-ladda-inställningar',async()=>{
+  return {finnsNyckel:fs.existsSync(apiKeyFil)};
+});
+ipcMain.handle('ai-chatt-meddelande',async(event,message,inkluderaKod,kod)=>{
+  const nyckel=losaNyckel();
+  if(!nyckel) return {fel:'API-nyckel saknas'};
+  let text=message;
+  if(inkluderaKod&&kod) text+='\n\n```plantuml\n'+kod+'\n```';
+  const response=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'x-api-key':nyckel,
+      'anthropic-version':'2023-06-01'
+    },
+    body:JSON.stringify({model:'claude-3-5-sonnet-20241022',max_tokens:4096,messages:[{role:'user',content:text}]})
+  });
+  if(!response.ok){
+    const err=await response.json();
+    return {fel:err.error?.message||'Anthropic API-fel'};
+  }
+  const data=await response.json();
+  return {svar:data.content[0].text};
 });
 app.whenReady().then(createWindow);
 app.on('window-all-closed',()=>{if(process.platform!=='darwin')app.quit();});
