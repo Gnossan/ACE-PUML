@@ -73,8 +73,8 @@ window.skapaAIInstallningar = function() {
   loadStatus();
 
   function loadStatus() {
-    aceAPI.aiLaddaInstallningar().then(function(installningar) {
-      if (installningar.finnsNyckel) {
+    aceAPI.hamtaNyckelStatus().then(function(nyckelStatus) {
+      if (nyckelStatus.sparad) {
         status.textContent = '✓ Nyckel sparad';
         status.style.color = 'green';
       } else {
@@ -91,20 +91,7 @@ window.skapaAIInstallningar = function() {
       status.style.color = 'red';
       return;
     }
-    var nyckelBuffer = new TextEncoder().encode(nyckel);
-    crypto.subtle.importKey('raw', nyckelBuffer, 'AES-GCM', false, ['encrypt']).then(function(exportKey) {
-      return crypto.subtle.exportKey('raw', exportKey);
-    }).then(function(keyBytes) {
-      var iv = crypto.getRandomValues(new Uint8Array(12));
-      return crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, new Uint8Array(keyBytes), new TextEncoder().encode(nyckel));
-    }).then(function(krypterat) {
-      var krypteradBuffer = new Uint8Array(krypterat);
-      var ivOchData = new Uint8Array(iv.length + krypteradBuffer.length);
-      ivOchData.set(iv);
-      ivOchData.set(krypteradBuffer, iv.length);
-      var base64Nyckel = btoa(String.fromCharCode.apply(null, Array.from(ivOchData)));
-      return aceAPI.aiSparaNyckel(base64Nyckel);
-    }).then(function(resultat) {
+    aceAPI.sparaApiNyckel(nyckel).then(function(resultat) {
       if (resultat && resultat.ok) {
         status.textContent = '✓ Nyckel sparad';
         status.style.color = 'green';

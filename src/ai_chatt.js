@@ -79,15 +79,17 @@ window.skapaAIChatt = function() {
     var includeKod = checkbox.checked;
     var code = document.getElementById('puml-input') ? document.getElementById('puml-input').value : '';
     svarDiv.textContent = 'Kontrollerar API-nyckel...';
-    aceAPI.aiLaddaInstallningar().then(function(installningar) {
-      if (!installningar.finnsNyckel) {
+    aceAPI.hamtaNyckelStatus().then(function(status) {
+      if (!status.sparad) {
         svarDiv.textContent = 'Fel: Ingen API-nyckel sparad. Gå till Inställningar och konfigurera din Anthropic-nyckel.';
         return;
       }
       svarDiv.textContent = 'Skickar till Claude...';
-      return aceAPI.aiChattMeddelande(message, includeKod, includeKod ? code : null);
+      return aceAPI.skickaAiMeddelande(message, includeKod, includeKod ? code : null);
     }).then(function(resultat) {
-      if (resultat && resultat.fel) {
+      if (resultat === undefined) {
+        return;
+      } else if (resultat && resultat.fel) {
         svarDiv.textContent = 'Fel: ' + resultat.fel;
       } else if (resultat && resultat.svar) {
         svarDiv.textContent = resultat.svar;

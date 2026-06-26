@@ -62,22 +62,23 @@ function losaNyckel(){
   try{
     if(!fs.existsSync(apiKeyFil)) return null;
     const data=JSON.parse(fs.readFileSync(apiKeyFil,'utf8'));
-    const krypterad=data.krypterad;
+    const krypterad=data.anthropic;
     if(!krypterad) return null;
     const buffer=Buffer.from(krypterad,'base64');
     return safeStorage.decryptString(buffer);
   }catch(e){return null;}
 }
-ipcMain.handle('ai-spara-nyckel',async(event,krypteradNyckel)=>{
-  fs.writeFileSync(apiKeyFil,JSON.stringify({krypterad:krypteradNyckel}));
+ipcMain.handle('spara-api-nyckel',async(event,nyckel)=>{
+  const krypterad=safeStorage.encryptString(nyckel);
+  fs.writeFileSync(apiKeyFil,JSON.stringify({anthropic:krypterad.toString('base64')}));
   return {ok:true};
 });
-ipcMain.handle('ai-ladda-inställningar',async()=>{
-  return {finnsNyckel:fs.existsSync(apiKeyFil)};
+ipcMain.handle('hamta-nyckel-status',async()=>{
+  return {sparad:fs.existsSync(apiKeyFil)};
 });
-ipcMain.handle('ai-chatt-meddelande',async(event,message,inkluderaKod,kod)=>{
+ipcMain.handle('skicka-ai-meddelande',async(event,message,inkluderaKod,kod)=>{
   const nyckel=losaNyckel();
-  if(!nyckel) return {fel:'API-nyckel saknas'};
+  if(!nyckel) return {fel:'Ingen API-nyckel sparad.'};
   let text=message;
   if(inkluderaKod&&kod) text+='\n\n```plantuml\n'+kod+'\n```';
   const response=await fetch('https://api.anthropic.com/v1/messages',{
